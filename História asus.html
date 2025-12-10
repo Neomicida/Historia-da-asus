@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>História da ASUS - Apresentação Completa</title>
+    <style>
+        :root {
+            --asus-blue: #00539b;
+            --asus-blue-bright: #0076db;
+            --asus-cyan: #00c3ff;
+            --rog-red: #ff0033;
+            --rog-dark: #110000;
+            --text-main: #333;
+            --bg-slide: #ffffff;
+            --accent: #00a8ff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #111;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Container que simula a proporção 16:9 do PowerPoint */
+        #presentation-stage {
+            width: 1280px;
+            height: 720px;
+            background-color: var(--bg-slide);
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            transform-origin: center center;
+        }
+
+        /* Estrutura do Slide */
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            padding: 60px 80px;
+            flex-direction: column;
+            animation: fadeIn 0.8s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .slide.active { display: flex; }
+
+        /* Tipografia Geral */
+        h1 { font-size: 3.5rem; color: var(--asus-blue); margin-bottom: 20px; line-height: 1.1; }
+        h2 { font-size: 2.8rem; color: var(--asus-blue); margin-bottom: 30px; border-bottom: 4px solid #eee; padding-bottom: 10px; }
+        h3 { font-size: 1.8rem; color: #555; margin-bottom: 15px; }
+        p { font-size: 1.4rem; line-height: 1.6; color: #444; margin-bottom: 20px; text-align: justify; }
+        ul { margin-left: 40px; margin-bottom: 20px; }
+        li { font-size: 1.3rem; line-height: 1.8; color: #444; margin-bottom: 10px; }
+
+        /* --- ESTILOS TECH (Capa e Fim) --- */
+        .tech-slide {
+            background: radial-gradient(circle at center, #001a33 0%, #000000 100%);
+            color: white;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Texto Tech com Glow */
+        .tech-slide h1 {
+            color: white;
+            font-size: 6rem;
+            text-shadow: 0 0 10px var(--asus-blue), 0 0 20px var(--asus-blue), 0 0 40px var(--asus-cyan);
+            z-index: 2;
+            margin-bottom: 10px;
+        }
+        
+        .tech-slide p {
+            color: #b3e0ff;
+            text-align: center;
+            z-index: 2;
+            text-shadow: 0 0 5px rgba(0, 195, 255, 0.5);
+        }
+
+        .tech-slide svg {
+            filter: drop-shadow(0 0 10px rgba(0, 195, 255, 0.6));
+            z-index: 2;
+            position: relative;
+        }
+
+        /* --- ESTILOS ROG (Gamer) --- */
+        .rog-slide {
+            background: radial-gradient(circle at center, #1a0505 0%, #000000 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .rog-slide h2 { 
+            color: #ff3333; 
+            border-color: #ff3333; 
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+            position: relative;
+            z-index: 2;
+        }
+        .rog-slide p, .rog-slide li { color: #ddd; position: relative; z-index: 2; }
+        .rog-card h3, .rog-slide h3 {
+            color: #fff;
+            text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 20px #ff0000;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        /* Canvas de Animação (Genérico) */
+        .anim-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* --- OUTROS ESTILOS --- */
+        .cols { display: flex; gap: 40px; height: 100%; align-items: center; position: relative; z-index: 2; }
+        .col-text { flex: 1.5; }
+        .col-img { flex: 1; display: flex; justify-content: center; align-items: center; }
+
+        .brand-split-container { display: flex; gap: 40px; margin-top: 30px; height: 60%; }
+        .split-card {
+            flex: 1; padding: 30px; border-radius: 15px; color: white; 
+            display: flex; flex-direction: column; justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: transform 0.3s;
+        }
+        .split-card:hover { transform: translateY(-5px); }
+        .split-asus { background: linear-gradient(135deg, #00539b 0%, #0076db 100%); border: 2px solid #004080; }
+        .split-pegatron { background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%); border: 2px solid #34495e; }
+        .split-card h3 { color: white; font-size: 2.2rem; margin-bottom: 15px; border-bottom: 2px solid rgba(255,255,255,0.3); padding-bottom: 10px;}
+        .split-card p { color: #f0f0f0; font-size: 1.3rem; text-align: left; }
+
+        .controls-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 50px;
+            background: rgba(0,0,0,0.05); display: flex; justify-content: space-between;
+            align-items: center; padding: 0 20px; z-index: 100;
+        }
+        .slide-number { font-size: 1rem; color: #888; font-weight: bold; }
+        .nav-buttons button {
+            padding: 8px 16px; font-size: 1rem; cursor: pointer;
+            background: var(--asus-blue); color: white; border: none; border-radius: 4px; margin-left: 10px;
+        }
+        .nav-buttons button:hover { background: #003d73; }
+        svg { max-width: 100%; max-height: 350px; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 1300px) { #presentation-stage { transform: scale(0.8); } }
+        @media (max-width: 1000px) { #presentation-stage { transform: scale(0.6); } }
+    </style>
+</head>
+<body>
+
+    <div id="presentation-stage">
+        
+        <!-- Slide 1: Capa (TECH STYLE) -->
+        <div class="slide tech-slide active" id="slide-tech-start">
+            <canvas id="canvas-start" class="anim-canvas"></canvas>
+            <svg width="400" height="120" viewBox="0 0 400 120">
+                <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="90" fill="white" stroke="#00c3ff" stroke-width="1">ASUS</text>
+                <line x1="50" y1="90" x2="350" y2="90" stroke="#00c3ff" stroke-width="2"/>
+                <text x="50%" y="110" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="14" fill="#aeccee" letter-spacing="4">IN SEARCH OF INCREDIBLE</text>
+            </svg>
+            <br>
+            <h1 style="font-size: 3rem; margin-top:20px; text-shadow:none; color: #fff;">História & Evolução</h1>
+            <p style="font-size: 1.2rem; opacity: 0.8; margin-top: 40px;">Pressione a seta ➡️ para iniciar</p>
+        </div>
+
+        <!-- Slide 2: Fundação -->
+        <div class="slide">
+            <h2>1989: A Fundação</h2>
+            <div class="cols">
+                <div class="col-text">
+                    <p>A história começa num pequeno apartamento em <strong>Taipé, Taiwan</strong>.</p>
+                    <p>Quatro engenheiros visionários decidiram deixar a sua antiga empresa (Acer) para criar algo novo:</p>
+                    <ul>
+                        <li>T.H. Tung</li>
+                        <li>Ted Hsu</li>
+                        <li>Wayne Hsieh</li>
+                        <li>M.T. Liao</li>
+                    </ul>
+                    <p>O sonho: Criar uma empresa focada em qualidade técnica superior.</p>
+                </div>
+                <div class="col-img">
+                    <svg viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="90" fill="#f0f0f0" stroke="#00539b" stroke-width="4"/>
+                        <rect x="60" y="60" width="35" height="35" fill="#333" rx="5"/>
+                        <rect x="105" y="60" width="35" height="35" fill="#333" rx="5"/>
+                        <rect x="60" y="105" width="35" height="35" fill="#333" rx="5"/>
+                        <rect x="105" y="105" width="35" height="35" fill="#333" rx="5"/>
+                        <text x="100" y="170" text-anchor="middle" font-size="12">OS 4 FUNDADORES</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: O Nome -->
+        <div class="slide">
+            <h2>A Origem do Nome "ASUS"</h2>
+            <div class="cols">
+                <div class="col-text">
+                    <p>Muitos pensam que é uma sigla, mas a origem é mitológica.</p>
+                    <ul>
+                        <li>Vem de <strong>PEGASUS</strong>, o cavalo alado da mitologia grega.</li>
+                        <li>Simboliza inspiração, sabedoria e aprendizado.</li>
+                        <li><strong>A Estratégia:</strong> Eles removeram as três primeiras letras ("PEG") para que a empresa aparecesse no topo das listas alfabéticas.</li>
+                    </ul>
+                    <p>"ASUS" = O espírito de pureza e aventura do Pegasus.</p>
+                </div>
+                <div class="col-img">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M20,80 Q40,10 80,20 Q60,40 70,60 Q50,50 40,70 Z" fill="none" stroke="#00539b" stroke-width="3"/>
+                        <text x="50" y="95" text-anchor="middle" font-size="8">PEGASUS</text>
+                        <text x="50" y="50" text-anchor="middle" font-size="30">🦄</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: O Grande Desafio (1990) -->
+        <div class="slide">
+            <h2>1990: O "Milagre" do Intel 486</h2>
+            <p>Na época, as empresas de Taiwan recebiam os processadores da Intel meses depois de gigantes como a IBM.</p>
+            <p><strong>O Problema:</strong> A ASUS queria lançar uma placa-mãe para o novo Intel 486, mas não tinha o chip para testes.</p>
+            <p><strong>A Solução:</strong> Eles projetaram a placa baseando-se apenas em especificações técnicas teóricas, sem o chip físico.</p>
+            <div style="background: #eef; padding: 20px; border-left: 5px solid var(--asus-blue);">
+                <p style="margin:0">Quando a Intel testou sua própria placa-mãe 486 e falhou, a ASUS apresentou a sua versão "feita às cegas". <strong>Funcionou perfeitamente.</strong></p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Parceria com a Intel -->
+        <div class="slide">
+            <h2>Consequências do Sucesso</h2>
+            <div class="cols">
+                <div class="col-text">
+                    <p>O feito do 486 impressionou tanto a Intel que a relação mudou para sempre.</p>
+                    <ul>
+                        <li>A ASUS passou a receber acesso antecipado aos processadores (Engenharia Simultânea).</li>
+                        <li>Tornou-se a maior fabricante de placas-mãe do mundo.</li>
+                        <li>Nasceu o slogan não oficial da época: <em>"ASUS, Rock Solid, Heart Touching"</em>.</li>
+                    </ul>
+                </div>
+                <div class="col-img">
+                    <!-- Chip Gráfico -->
+                    <svg viewBox="0 0 150 150">
+                        <rect x="10" y="10" width="130" height="130" fill="#222" rx="10"/>
+                        <rect x="30" y="30" width="90" height="90" fill="#444"/>
+                        <text x="75" y="75" text-anchor="middle" fill="#fff" font-family="monospace" font-size="14">INTEL</text>
+                        <text x="75" y="90" text-anchor="middle" fill="#fff" font-family="monospace" font-size="14">INSIDE</text>
+                        <path d="M10,10 L30,30 M140,10 L120,30 M10,140 L30,120 M140,140 L120,120" stroke="#gold" stroke-width="2"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Jonney Shih -->
+        <div class="slide">
+            <h2>1993: A Liderança de Jonney Shih</h2>
+            <div class="cols">
+                <div class="col-text">
+                    <p>Jonney Shih assumiu como Presidente e CEO.</p>
+                    <p>Ele é a figura carismática que transformou a ASUS de uma fabricante de componentes em uma marca global de consumo.</p>
+                    <ul>
+                        <li>Foco em <strong>Design Thinking</strong>.</li>
+                        <li>Obsessão por engenharia e estética ("Zen").</li>
+                        <li>Famoso pelas suas apresentações energéticas em palcos globais.</li>
+                    </ul>
+                </div>
+                <div class="col-img">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="40" r="20" fill="#ccc"/>
+                        <path d="M20,90 Q50,60 80,90" fill="#555"/>
+                        <text x="50" y="30" text-anchor="middle">👔</text>
+                        <text x="50" y="100" text-anchor="middle" font-size="10">LIDERANÇA</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Diversificação (Anos 90) -->
+        <div class="slide">
+            <h2>Expansão de Horizontes</h2>
+            <p>Durante a década de 90, a ASUS provou que não fazia apenas placas-mãe.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 8px;">
+                    <h3>Placas Gráficas</h3>
+                    <p>Tornou-se referência em performance com chips NVIDIA e ATI.</p>
+                </div>
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 8px;">
+                    <h3>Notebooks</h3>
+                    <p>Lançamento do primeiro notebook ASUS em 1997 (o P6300).</p>
+                </div>
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 8px;">
+                    <h3>Drives Óticos</h3>
+                    <p>Líder em leitores de CD-ROM e gravadores de DVD de alta velocidade.</p>
+                </div>
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 8px;">
+                    <h3>Servidores</h3>
+                    <p>Infraestrutura robusta para empresas.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: O Teste Espacial -->
+        <div class="slide">
+            <h2>1998: ASUS no Espaço</h2>
+            <div class="cols">
+                <div class="col-text">
+                    <p>Os notebooks ASUS P6100 foram escolhidos para uma missão na estação espacial <strong>MIR</strong>.</p>
+                    <ul>
+                        <li>Operaram por 600 dias no espaço.</li>
+                        <li>Sobreviveram sem defeitos, enquanto notebooks de concorrentes falharam devido ao superaquecimento.</li>
+                        <li>Isso cimentou a reputação de durabilidade militar da marca.</li>
+                    </ul>
+                </div>
+                <div class="col-img">
+                    <svg viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="80" fill="#000033"/>
+                        <circle cx="100" cy="100" r="2" fill="white" box-shadow="0 0 5px white"/>
+                        <circle cx="50" cy="50" r="1" fill="white"/>
+                        <circle cx="150" cy="150" r="1" fill="white"/>
+                        <rect x="70" y="70" width="60" height="40" fill="#999" stroke="white" stroke-width="2"/>
+                        <text x="100" y="140" text-anchor="middle" fill="white" font-size="12">MISSÃO MIR</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Republic of Gamers (ROG) -->
+        <div class="slide rog-slide" id="rog-intro-slide">
+            <canvas id="canvas-rog-9" class="anim-canvas"></canvas>
+            <h2>2006: Nasce a ROG</h2>
+            <div class="cols">
+                <div class="col-text">
+                    <p>A ASUS percebeu que os gamers precisavam de mais do que o hardware padrão oferecia.</p>
+                    <p>Criaram a sub-marca <strong>Republic of Gamers</strong> com um objetivo: <em>The Choice of Champions</em>.</p>
+                    <ul>
+                        <li>Hardware desbloqueado para Overclock.</li>
+                        <li>Design agressivo (Vermelho e Preto).</li>
+                        <li>Performance sem compromissos.</li>
+                    </ul>
+                </div>
+                <div class="col-img">
+                    <svg viewBox="0 0 200 150">
+                        <path d="M100,20 L160,50 L160,110 L100,140 L40,110 L40,50 Z" fill="none" stroke="#ff3333" stroke-width="5"/>
+                        <path d="M60,60 Q100,110 140,60" fill="none" stroke="#ff3333" stroke-width="8" stroke-linecap="round"/>
+                        <circle cx="80" cy="70" r="6" fill="#ff3333"/>
+                        <circle cx="120" cy="70" r="6" fill="#ff3333"/>
+                        <text x="100" y="125" text-anchor="middle" fill="#ff3333" font-family="Arial" font-weight="bold" font-size="14">ROG</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: O Fenômeno Eee PC -->
+        <div class="slide">
+            <h2>2007: A Revolução Eee PC</h2>
+            <div class="cols">
+                <div class="col-text">
+                    <p>Possivelmente o produto mais influente da história da ASUS.</p>
+                    <p>O <strong>Eee PC 701</strong> criou a categoria "Netbook".</p>
+                    <ul>
+                        <li><strong>E</strong>asy to learn, <strong>E</strong>asy to work, <strong>E</strong>asy to play.</li>
+                        <li>Pequeno (7 polegadas), leve e muito barato.</li>
+                        <li>Rodava Linux (e depois Windows XP).</li>
+                        <li>Vendeu milhões e obrigou todo o mercado a criar netbooks.</li>
+                    </ul>
+                </div>
+                <div class="col-img">
+                    <svg viewBox="0 0 200 150">
+                         <path d="M20,100 L180,100 L190,110 L10,110 Z" fill="#333"/>
+                         <rect x="30" y="20" width="140" height="80" rx="5" fill="#555"/>
+                         <rect x="35" y="25" width="130" height="70" fill="#87CEEB"/>
+                         <text x="100" y="65" text-anchor="middle" font-size="14" fill="#fff" opacity="0.5">Eee</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Separação da Pegatron -->
+        <div class="slide">
+            <h2>2008: A Grande Reestruturação</h2>
+            <p>Para resolver conflitos de interesse entre produzir para si e para rivais (Apple, HP), a empresa dividiu-se.</p>
+            <div class="brand-split-container">
+                <div class="split-card split-asus">
+                    <h3>ASUS (Marca)</h3>
+                    <p>Focou exclusivamente em design, inovação e vendas de produtos de consumo sob a marca ASUS.</p>
+                </div>
+                <div class="split-card split-pegatron">
+                    <h3>Pegatron (Fábrica)</h3>
+                    <p>Tornou-se uma fabricante independente (OEM/ODM). Hoje é responsável por montar iPhones e consolas PlayStation.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Luxo e Design -->
+        <div class="slide">
+            <h2>Parcerias de Luxo</h2>
+            <p>Para elevar a percepção da marca, a ASUS colaborou com ícones do design.</p>
+            <ul>
+                <li><strong>ASUS-Lamborghini VX Series:</strong> Notebooks com materiais premium (couro, fibra de carbono) e design inspirado nos supercarros italianos.</li>
+                <li>Designers como <strong>Karim Rashid</strong> colaboraram na linha Eee PC Seashell.</li>
+            </ul>
+            <p style="margin-top: 20px;">Isso provou que computadores poderiam ser objetos de desejo, não apenas ferramentas de escritório.</p>
+        </div>
+
+        <!-- Slide 13: A Era dos Transformadores -->
+        <div class="slide">
+            <h2>2011: Inovação em Formatos</h2>
+            <div class="cols">
+                <div class="col-text">
+                    <p>Antes do Microsoft Surface popularizar o híbrido, a ASUS lançou o <strong>Eee Pad Transformer</strong>.</p>
+                    <ul>
+                        <li>Tablet Android que se encaixava num teclado físico.</li>
+                        <li>Bateria dupla (tela + teclado).</li>
+                    </ul>
+                    <p>Também criaram o <strong>PadFone</strong>: Um smartphone que entrava dentro de um tablet para virar uma tela grande.</p>
+                </div>
+                <div class="col-img">
+                    <svg viewBox="0 0 200 150">
+                        <rect x="50" y="20" width="100" height="70" rx="5" fill="#444" stroke="#333"/>
+                        <rect x="40" y="95" width="120" height="10" rx="2" fill="#222"/>
+                        <path d="M95,40 L105,40 L105,80 L95,80 Z" fill="#00a8ff"/>
+                        <text x="100" y="130" text-anchor="middle" font-size="10">2-em-1</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: ZenFone -->
+        <div class="slide">
+            <h2>2014: A Família ZenFone</h2>
+            <p>A ASUS entrou agressivamente no mercado de smartphones focando no "Luxo Acessível".</p>
+            <ul>
+                <li><strong>ZenFone 5 (Original):</strong> Sucesso imediato no Brasil e Índia pelo custo-benefício.</li>
+                <li><strong>ZenFone 2:</strong> Primeiro smartphone do mundo com 4GB de RAM.</li>
+            </ul>
+            <p>O design concêntrico ("Zen") na traseira tornou-se a assinatura visual da marca.</p>
+        </div>
+
+        <!-- Slide 15: ZenBook -->
+        <div class="slide">
+            <h2>A Linha ZenBook</h2>
+            <p>Resposta direta ao MacBook Air, mas com a identidade ASUS.</p>
+            <div class="cols">
+                <div class="col-text">
+                    <ul>
+                        <li>Corpo unibody de alumínio ultrafino.</li>
+                        <li>Acabamento em metal fiado (Círculos concêntricos).</li>
+                        <li>Foco em portabilidade extrema e telas de alta qualidade (OLED nos anos recentes).</li>
+                    </ul>
+                </div>
+                <div class="col-img">
+                    <svg viewBox="0 0 200 150">
+                         <path d="M20,110 L180,110 L190,120 L10,120 Z" fill="#ccc"/>
+                         <path d="M20,110 L20,30 L180,30 L180,110 Z" fill="#999"/>
+                         <circle cx="100" cy="70" r="30" fill="none" stroke="#bbb" stroke-width="1"/>
+                         <circle cx="100" cy="70" r="20" fill="none" stroke="#bbb" stroke-width="1"/>
+                         <circle cx="100" cy="70" r="10" fill="none" stroke="#bbb" stroke-width="1"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Philosophy -->
+        <div class="slide">
+            <h2>"In Search of Incredible"</h2>
+            <p>Mais do que um slogan de marketing, tornou-se a filosofia da empresa.</p>
+            <p>A campanha reflete a busca constante pela perfeição, inovação e o extraordinário no dia a dia.</p>
+            <br>
+            <blockquote>
+                "Nós começamos com as pessoas. Nós pensamos no que elas precisam, sentimos o que elas sentem, e criamos o que elas desejam."
+            </blockquote>
+        </div>
+
+        <!-- Slide 17: ScreenPad -->
+        <div class="slide">
+            <h2>Reinventando o Laptop</h2>
+            <p>A ASUS liderou a inovação de múltiplas telas em laptops.</p>
+            <ul>
+                <li><strong>ScreenPad:</strong> O touchpad virou uma tela sensível ao toque com apps.</li>
+                <li><strong>ZenBook Duo:</strong> Uma segunda tela inteira acima do teclado para produtividade e criadores de conteúdo.</li>
+                <li><strong>ZenBook Fold:</strong> O primeiro laptop com tela dobrável de 17 polegadas.</li>
+            </ul>
+        </div>
+
+        <!-- Slide 18: ROG Hoje (GAMER EFFECT) -->
+        <div class="slide rog-slide" id="rog-dynamic-slide">
+            <canvas id="canvas-rog-18" class="anim-canvas"></canvas>
+            <h2>ROG: Dominando o Gaming Moderno</h2>
+            <p>A divisão ROG expandiu-se para um ecossistema completo.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; position: relative; z-index: 2; margin-top: 40px;">
+                <div class="rog-card">
+                    <h3>ROG PHONE</h3>
+                    <p>O smartphone gamer mais poderoso do mercado, com triggers ultrassônicos e refrigeração ativa.</p>
+                </div>
+                <div class="rog-card">
+                    <h3>ROG ZEPHYRUS</h3>
+                    <p>Laptops gamers ultrafinos que combinam potência extrema com portabilidade.</p>
+                </div>
+                <div class="rog-card">
+                    <h3>ROG ALLY</h3>
+                    <p>A consola portátil com Windows 11 que permite jogar qualquer biblioteca (Steam, Xbox) em qualquer lugar.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 19: AIoT -->
+        <div class="slide">
+            <h2>Além do Consumidor Final: AIoT</h2>
+            <p>Nos últimos anos, a ASUS investiu pesado em <strong>AIoT (Inteligência Artificial das Coisas)</strong>.</p>
+            <ul>
+                <li>Hospitais inteligentes (Healthcare).</li>
+                <li>Fábricas automatizadas.</li>
+                <li>Cidades inteligentes.</li>
+            </ul>
+            <p>Uso de servidores ASUS para processamento de IA e Machine Learning na nuvem.</p>
+        </div>
+
+        <!-- Slide 20: Sustentabilidade -->
+        <div class="slide">
+            <h2>Compromisso Verde</h2>
+            <div class="cols">
+                <div class="col-text">
+                    <p>A ASUS comprometeu-se a usar energia 100% renovável em seus centros globais até 2030.</p>
+                    <ul>
+                        <li>Uso de plásticos reciclados pós-consumo nos laptops.</li>
+                        <li>Certificações militares de durabilidade (aumentando a vida útil do produto e reduzindo o lixo eletrônico).</li>
+                        <li>Embalagens sustentáveis.</li>
+                    </ul>
+                </div>
+                <div class="col-img">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M50,20 Q80,20 80,50 Q80,80 50,80 Q20,80 20,50 Q20,20 50,20" fill="none" stroke="#4CAF50" stroke-width="5"/>
+                        <path d="M50,30 L50,70 M30,50 L70,50" stroke="#4CAF50" stroke-width="0"/>
+                        <path d="M50,40 Q60,20 70,40" fill="#4CAF50"/>
+                        <text x="50" y="65" text-anchor="middle" font-size="10" fill="#4CAF50">ECO</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 21: 2025 -->
+        <div class="slide">
+            <h2>O Futuro: Copilot+ e IA</h2>
+            <p>A ASUS está na vanguarda da revolução da IA nos PCs.</p>
+            <ul>
+                <li>Lançamento dos <strong>ASUS Vivobook S 15</strong> e linhas <strong>ProArt</strong> com chips NPU dedicados para Inteligência Artificial.</li>
+                <li>Integração total com o Microsoft Copilot.</li>
+                <li>Foco em criadores de conteúdo que usam IA generativa localmente, sem depender da nuvem.</li>
+            </ul>
+        </div>
+
+        <!-- Slide 22: Conclusão (TECH STYLE) -->
+        <div class="slide tech-slide" id="slide-tech-end">
+            <canvas id="canvas-end" class="anim-canvas"></canvas>
+            <h1 style="color: #00c3ff;">Obrigado!</h1>
+            <svg width="200" height="200" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="90" fill="none" stroke="#00c3ff" stroke-width="5"/>
+                <path d="M60,100 L90,130 L140,70" fill="none" stroke="#00c3ff" stroke-width="10" stroke-linecap="round"/>
+            </svg>
+            <br>
+            <p style="font-size: 1.5rem; color: white;">ASUS: In Search of Incredible</p>
+            <br>
+            <!-- BOTÃO CORRIGIDO: Chama restartPresentation() -->
+            <button onclick="restartPresentation()" style="z-index: 10; padding: 10px 20px; background: transparent; border: 1px solid #00c3ff; color: #00c3ff; border-radius: 5px; cursor: pointer; font-weight: bold;">Reiniciar Apresentação ↺</button>
+        </div>
+
+        <!-- Barra de Controles -->
+        <div class="controls-bar">
+            <div class="slide-number" id="slide-counter">Slide 1 / 22</div>
+            <div class="nav-buttons">
+                <button onclick="prevSlide()">❮ Anterior</button>
+                <button onclick="nextSlide()">Próximo ❯</button>
+                <button onclick="toggleFullScreen()">⛶ Tela Cheia</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const counter = document.getElementById('slide-counter');
+        
+        // --- Sistema de Partículas Unificado ---
+        let animId;
+        let particles = [];
+        let activeCanvas = null;
+        let activeCtx = null;
+        
+        // Configurações de tema para animação
+        const themes = {
+            rog: { color: '255, 50, 50', lineAlpha: 0.15, connectionDist: 150 }, // Vermelho
+            tech: { color: '0, 195, 255', lineAlpha: 0.2, connectionDist: 180 }   // Azul Ciano
+        };
+
+        class Particle {
+            constructor(canvas, theme) {
+                this.canvas = canvas;
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 1.5;
+                this.vy = (Math.random() - 0.5) * 1.5;
+                this.size = Math.random() * 2.5;
+                this.theme = theme;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                if (this.x < 0 || this.x > this.canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > this.canvas.height) this.vy *= -1;
+            }
+            draw(ctx) {
+                ctx.fillStyle = `rgba(${this.theme.color}, 0.8)`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles(canvasId, themeName) {
+            // Parar animação anterior
+            if (animId) cancelAnimationFrame(animId);
+
+            activeCanvas = document.getElementById(canvasId);
+            if (!activeCanvas) return;
+            
+            activeCtx = activeCanvas.getContext('2d');
+            activeCanvas.width = 1280;
+            activeCanvas.height = 720;
+
+            const theme = themes[themeName];
+            particles = [];
+            for (let i = 0; i < 70; i++) {
+                particles.push(new Particle(activeCanvas, theme));
+            }
+            animate(theme);
+        }
+
+        function animate(theme) {
+            if (!activeCtx || !activeCanvas) return;
+
+            activeCtx.clearRect(0, 0, activeCanvas.width, activeCanvas.height);
+            
+            activeCtx.strokeStyle = `rgba(${theme.color}, ${theme.lineAlpha})`;
+            activeCtx.lineWidth = 1;
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw(activeCtx);
+                
+                for (let j = i; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < theme.connectionDist) {
+                        activeCtx.beginPath();
+                        activeCtx.moveTo(particles[i].x, particles[i].y);
+                        activeCtx.lineTo(particles[j].x, particles[j].y);
+                        activeCtx.stroke();
+                    }
+                }
+            }
+            animId = requestAnimationFrame(() => animate(theme));
+        }
+
+        function stopParticles() {
+            if (animId) cancelAnimationFrame(animId);
+            animId = null;
+        }
+
+        // --- Lógica de Slides ---
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            counter.innerText = `Slide ${index + 1} / ${slides.length}`;
+
+            // Controle de animações por Slide ID
+            const currentId = slides[index].id;
+            
+            if (currentId === 'slide-tech-start') {
+                initParticles('canvas-start', 'tech');
+            } else if (currentId === 'slide-tech-end') {
+                initParticles('canvas-end', 'tech');
+            } else if (currentId === 'rog-intro-slide') {
+                initParticles('canvas-rog-9', 'rog');
+            } else if (currentId === 'rog-dynamic-slide') {
+                initParticles('canvas-rog-18', 'rog');
+            } else {
+                stopParticles();
+            }
+        }
+
+        // --- CORREÇÃO DO BUG: Função específica para Reiniciar ---
+        function restartPresentation() {
+            currentSlide = 0; // Zera a variável de estado
+            showSlide(0);     // Atualiza a visualização
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        function toggleFullScreen() {
+            const elem = document.documentElement;
+            if (!document.fullscreenElement) {
+                elem.requestFullscreen().catch(err => alert(`Erro: ${err.message}`));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+            else if (e.key === 'ArrowLeft') prevSlide();
+            else if (e.key === 'f') toggleFullScreen();
+        });
+
+        // Inicializar Capa
+        showSlide(0);
+    </script>
+</body>
+</html>
